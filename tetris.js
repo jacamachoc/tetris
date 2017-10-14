@@ -63,6 +63,7 @@ function merge(arena, player) {
 
 function playerDrop() {
   player.pos.y++;
+
   if(collide(arena, player)) {
     player.pos.y--;
     merge(arena, player);
@@ -73,8 +74,39 @@ function playerDrop() {
 
 function playerMove(direction) {
   player.pos.x += direction;
+
   if(collide(arena, player))
     player.pos.x -= direction;
+}
+
+function playerRotate(direction) {
+  const pos = player.pos.x
+  let offset = 1;
+
+  rotate(player.matrix, direction);
+  while(collide(arena, player)) {
+    player.pos.x += offset;
+    offset = -(offset + (offset > 0 ? 1 : -1));
+
+    if(offset > player.matrix[0].length) {
+      rotate(player.matrix, -direction);
+      player.pos.x = pos;
+      return;
+    }
+  }
+}
+
+function rotate(matrix, direction) {
+  for(let y = 0; y < matrix.length; ++y) {
+    for(let x = 0; x < y; ++x) {
+      [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+    }
+  }
+
+  if(direction > 0)
+    matrix.forEach(row => row.reverse());
+  else
+    matrix.reverse();
 }
 
 let dropCounter = 0;
@@ -82,6 +114,7 @@ let dropInterval = 1000;
 let lastTime = 0;
 function update(time = 0) {
   const delta = time - lastTime;
+
   lastTime = time;
   dropCounter += delta;
   if(dropCounter > dropInterval) {
@@ -103,9 +136,10 @@ document.addEventListener('keydown', event => {
     playerMove(-1);
   else if(event.keyCode === 39) // right
     playerMove(1);
-  else if(event.keyCode === 40) {
+  else if(event.keyCode === 40) // down
     playerDrop();
-  }
+  else if(event.keyCode === 38) // up (piece rotate - clockwise default)
+    playerRotate(1);
 });
 
 update();
