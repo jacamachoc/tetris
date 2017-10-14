@@ -33,10 +33,11 @@ function createMatrix(w, h) {
 function createPiece(type) {
   if(type === 'I') {
     return [
-      [0, 1, 0, 0],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0],
     ];
   }
   else if(type === 'J'){
@@ -126,8 +127,9 @@ function merge(arena, player) {
   });
 }
 
-function playerDrop() {
-  player.pos.y++;
+function playerDrop(inc) {
+  while(inc-- && !collide(arena, player))
+    player.pos.y++;
 
   if(collide(arena, player)) {
     player.pos.y--;
@@ -217,7 +219,7 @@ function update(time = 0) {
   lastTime = time;
   dropCounter += delta;
   if(dropCounter > dropInterval) {
-    playerDrop();
+    playerDrop(1);
   }
   draw();
   requestAnimationFrame(update);
@@ -229,9 +231,11 @@ document.addEventListener('keydown', event => {
   else if(event.keyCode === 39) // right
     playerMove(1);
   else if(event.keyCode === 40) // down
-    playerDrop();
+    playerDrop(1);
   else if(event.keyCode === 38) // up (piece rotate - clockwise default)
     playerRotate(1);
+  else if(event.keyCode === 32) // space (until collide)
+    playerDrop(20); // argument sufficiently big to travel the whole arena height
 });
 
 updateScore();
