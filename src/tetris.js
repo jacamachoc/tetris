@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 
 ctx.scale(20, 20);
 
+var pause = false;
 const pieces = 'IJLOSTZ';
 const colors = [
   null, 
@@ -215,13 +216,14 @@ let dropInterval = 1000;
 let lastTime = 0;
 function update(time = 0) {
   const delta = time - lastTime;
-
-  lastTime = time;
-  dropCounter += delta;
-  if(dropCounter > dropInterval) {
-    playerDrop(1);
+  if(!pause) {
+    lastTime = time;
+    dropCounter += delta;
+    if(dropCounter > dropInterval) {
+      playerDrop(1);
+    }
+    draw();
   }
-  draw();
   requestAnimationFrame(update);
 }
 
@@ -236,6 +238,8 @@ document.addEventListener('keydown', event => {
     playerRotate(1);
   else if(event.keyCode === 32) // space (until collide)
     playerDrop(20); // argument sufficiently big to travel the whole arena height
+  else if(event.keyCode === 80)
+    pause = !(pause);
 });
 
 updateScore();
