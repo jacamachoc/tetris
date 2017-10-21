@@ -6,7 +6,11 @@ body {
   text-align: center;
 }
 
-canvas {
+canvas#tetris {
   border: solid .2em #fff;
-  height: 90vh;
+  height: 87vh;
+}
+
+canvas#nextPiece {
+  border: solid .2em #fff;
 }

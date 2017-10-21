@@ -1,7 +1,12 @@
+// deve renderizar a parte da proxima peça só quando vier uma outra peça
+
 const canvas = document.getElementById("tetris");
+const next = document.getElementById("nextPiece");
 const ctx = canvas.getContext("2d");
+const ctx2 = next.getContext("2d");
 
 ctx.scale(20, 20);
+ctx2.scale(20, 20);
 
 var pause = false;
 const pieces = 'IJLOSTZ';
@@ -18,7 +23,8 @@ const colors = [
 const arena = createMatrix(12, 20);
 const player = {
   pos: {x: (10 * Math.random() | 0), y: 0},
-  matrix: createPiece(pieces[pieces.length * Math.random() | 0]),
+  nextMatrix: createPiece(pieces[pieces.length * Math.random() | 0]),
+  matrix: undefined,
   score: 0,
 }
 
@@ -151,7 +157,7 @@ function playerMove(direction) {
 }
 
 function playerReset() {
-  player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+  nextPiece();
   player.pos.y = 0;
   player.pos.x = (10 * Math.random() | 0);
 
@@ -160,6 +166,11 @@ function playerReset() {
     player.score = 0;
     updateScore();
   }
+}
+
+function nextPiece() {
+  player.matrix = player.nextMatrix;
+  player.nextMatrix = createPiece(pieces[pieces.length * Math.random() | 0]);
 }
 
 function playerRotate(direction) {
@@ -192,7 +203,7 @@ function rotate(matrix, direction) {
     matrix.reverse();
 }
 
-function drawMatrix(matrix, offset) {
+function drawMatrix(matrix, offset, next = undefined) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if(value !== 0) {
@@ -201,14 +212,26 @@ function drawMatrix(matrix, offset) {
       }
     });
   });
+  if(next) {
+    next.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if(value !== 0) {
+          ctx2.fillStyle = colors[value];
+          ctx2.fillRect(x, y, 1, 1);
+        }
+      });
+    });
+  }
 }
 
 function draw() {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx2.fillStyle = '#000';
+  ctx2.fillRect(0, 0, next.width, next.height);
 
   drawMatrix(arena, {x: 0, y: 0});
-  drawMatrix(player.matrix, player.pos);
+  drawMatrix(player.matrix, player.pos, player.nextMatrix);
 }
 
 let dropCounter = 0;
@@ -243,4 +266,5 @@ document.addEventListener('keydown', event => {
 });
 
 updateScore();
+nextPiece();
 update();
