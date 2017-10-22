@@ -5,11 +5,21 @@
   </head>
   <body>
     <div class="container">
+      <h1 id="paused">PAUSED</h1>
+      <div class="instructions">
+        <h5>↑ - Rotation</h5>
+        <h5>↓ - Down</h5>
+        <h5>→ - Right</h5>
+        <h5>← - Left</h5>
+        <h5>P - Pause</h5>
+        <h5>Space - Ground</h5>
+      </div>
       <div class="arena-container">
         <div id="score"></div>
         <canvas id="tetris" width="240" height="400"></canvas>
       </div>
       <div class="next-container">
+        <h6 id="next-piece">Next Piece</h6>
         <canvas id="nextPiece" width="120" height="120"></canvas>
       </div>
       <script src="tetris.js"></script>

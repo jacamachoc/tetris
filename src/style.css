@@ -3,22 +3,52 @@ body {
   color: #fff;
   font-family: sans-serif;
   font-size: 2em;
-  text-align: center;
+}
+
+#paused {
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em darkblue;
+  animation: blinker 1.5s linear infinite;
+  display: none;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
 }
 
 .container {
-  width: 40%;
+  text-align: center;
+  width: 90%;
   margin: 0 auto;
 }
 
-.arena-container {
+.instructions {
   float: left;
+  width: 20%;
+  text-align: left;
+  color: #9C9788;
+  margin-top: 5%;
+}
+
+.arena-container {
+  display: inline-block;
+  margin: 0 auto;
+  width: 40%;
 }
 
 .next-container {
-  position: absolute;
-  top: 40%;
-  right: 30%;
+  display: inline-block;
+  margin-top: 18%;
+  vertical-align: top;
+  width: 20%;
+}
+
+#next-piece {
+  margin: 10;
+  color: #9C9788;
 }
 
 canvas#tetris {

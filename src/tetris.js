@@ -7,6 +7,7 @@ ctx.scale(20, 20);
 ctx2.scale(20, 20);
 
 var pause = false;
+var pauseControl = 0;
 const pieces = 'IJLOSTZ';
 const colors = [
   null, 
@@ -130,6 +131,17 @@ function merge(arena, player) {
       }
     });
   });
+}
+
+function showPauseText() {
+  var x = document.getElementById("paused");
+  if(pauseControl % 2 === 0){   
+    x.style.display = 'block';
+  }
+  else {
+    x.style.display = 'none';
+  }
+  ++pauseControl;
 }
 
 function playerDrop(inc) {
@@ -259,8 +271,10 @@ document.addEventListener('keydown', event => {
     playerRotate(1);
   else if(event.keyCode === 32) // space (until collide)
     playerDrop(20); // argument sufficiently big to travel the whole arena height
-  else if(event.keyCode === 80)
+  else if(event.keyCode === 80) {
+    showPauseText();
     pause = !(pause);
+  }
 });
 
 updateScore();
