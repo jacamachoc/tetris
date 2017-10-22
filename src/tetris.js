@@ -1,5 +1,3 @@
-// deve renderizar a parte da proxima peça só quando vier uma outra peça
-
 const canvas = document.getElementById("tetris");
 const next = document.getElementById("nextPiece");
 const ctx = canvas.getContext("2d");
