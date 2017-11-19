@@ -8,6 +8,7 @@ ctx2.scale(20, 20);
 
 var pause = false;
 var pauseControl = 0;
+var gameOver = false;
 const pieces = 'IJLOSTZ';
 const colors = [
   null, 
@@ -133,13 +134,13 @@ function merge(arena, player) {
   });
 }
 
-function showPauseText() {
-  var x = document.getElementById("paused");
+function pauseText() {
+  var text = document.getElementById("paused");
   if(pauseControl % 2 === 0){   
-    x.style.display = 'block';
+    text.style.display = 'block';
   }
   else {
-    x.style.display = 'none';
+    text.style.display = 'none';
   }
   ++pauseControl;
 }
@@ -166,15 +167,28 @@ function playerMove(direction) {
     player.pos.x -= direction;
 }
 
+function newGame() {
+  arena.forEach(row => row.fill(0));
+  player.score = 0;
+  updateScore();
+  document.getElementById('container').style.opacity = '1';
+  document.getElementById('game-over').style.display = 'none';
+  document.getElementById('game-over-score').style.display = 'none';
+  gameOver = false;
+}
+
 function playerReset() {
   nextPiece();
   player.pos.y = 0;
   player.pos.x = (10 * Math.random() | 0);
 
   if(collide(arena, player)) {
-    arena.forEach(row => row.fill(0));
-    player.score = 0;
-    updateScore();
+    var finalScoreText = document.getElementById('game-over-score');
+    gameOver = true;
+    document.getElementById('container').style.opacity = '0.5';
+    document.getElementById('game-over').style.display = 'block';
+    finalScoreText.style.display = 'block';
+    finalScoreText.innerHTML = player.score;
   }
 }
 
@@ -218,7 +232,7 @@ function drawMatrix(matrix, offset, next = undefined) {
     row.forEach((value, x) => {
       if(value !== 0) {
         ctx.fillStyle = colors[value];
-        ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
+        ctx.fillRect(x + offset.x, y + offset.y, .9, .9);
       }
     });
   });
@@ -227,7 +241,7 @@ function drawMatrix(matrix, offset, next = undefined) {
       row.forEach((value, x) => {
         if(value !== 0) {
           ctx2.fillStyle = colors[value];
-          ctx2.fillRect(x, y, 1, 1);
+          ctx2.fillRect(x, y, .9, .9);
         }
       });
     });
@@ -249,7 +263,7 @@ let dropInterval = 1000;
 let lastTime = 0;
 function update(time = 0) {
   const delta = time - lastTime;
-  if(!pause) {
+  if(!pause && !gameOver) {
     lastTime = time;
     dropCounter += delta;
     if(dropCounter > dropInterval) {
@@ -261,19 +275,26 @@ function update(time = 0) {
 }
 
 document.addEventListener('keydown', event => {
-  if(event.keyCode === 37) // left
+  if(!gameOver) {
+    if(event.keyCode === 37) // left
     playerMove(-1);
-  else if(event.keyCode === 39) // right
-    playerMove(1);
-  else if(event.keyCode === 40) // down
-    playerDrop(1);
-  else if(event.keyCode === 38) // up (piece rotate - clockwise default)
-    playerRotate(1);
-  else if(event.keyCode === 32) // space (until collide)
-    playerDrop(20); // argument sufficiently big to travel the whole arena height
-  else if(event.keyCode === 80) {
-    showPauseText();
-    pause = !(pause);
+    else if(event.keyCode === 39) // right
+      playerMove(1);
+    else if(event.keyCode === 40) // down
+      playerDrop(1);
+    else if(event.keyCode === 38) // up (piece rotate - clockwise default)
+      playerRotate(1);  
+    else if(event.keyCode === 32) // space (until collide)
+      playerDrop(20); // argument sufficiently big to travel the whole arena height
+    else if(event.keyCode === 80) {
+      pauseText();
+      pause = !(pause);
+    }
+  }
+  else {
+    if(event.keyCode === 13) {
+      newGame();
+    }
   }
 });
 

@@ -19,7 +19,24 @@ body {
   50% { opacity: 0; }
 }
 
-.container {
+#game-over {
+  position: absolute;
+  top: 40%;
+  left: 23%;
+  display: none;
+  z-index: 1;
+  font-size: 80px;
+}
+
+#game-over-score {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: none;
+  z-index: 1;
+}
+
+#container {
   text-align: center;
   width: 90%;
   margin: 0 auto;
